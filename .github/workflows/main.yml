@@ -59,7 +59,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           # 要部署的文件夹，必填
-          FOLDER: /dist
+          FOLDER: .dist
           # 希望部署的分支，默认gh-pages
           BRANCH: gh-pages
           # # 仓库范围的访问令牌，可以将个人令牌的值存储在GitHub Secrets中
