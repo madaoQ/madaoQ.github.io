@@ -1,5 +1,4 @@
 //接收通知的API
-//TODO:封装接收通知，返回一个新消息。
 import { type AndroidNotification, NotificationsListener, type NotificationsListenerPlugin, type ListenerOptions } from 'capacitor-notifications-listener';
 
 const systemNotificationListener: NotificationsListenerPlugin = NotificationsListener;
