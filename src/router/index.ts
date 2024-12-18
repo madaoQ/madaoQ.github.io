@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory ,createWebHashHistory} from 'vue-router';
 import MessageList from '@/views/MessageList.vue';
 // import MessageDetail from '@/views/MessageDetail.vue';
 // import ReceivedNotification from '@/views/ReceivedNotification.vue'
@@ -10,7 +10,7 @@ import LoginForm from '@/views/login/index.vue'
 const routes = [
   {
     path: "/",
-    redirect: '/login'
+    redirect: '/login',
   },
   {
     path: '/login',
@@ -43,7 +43,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  history: createWebHistory(),
+  // history: createWebHistory(),
+  history: createWebHashHistory(), 
   routes,
 });
 
