@@ -21,6 +21,7 @@ const cssConfig = {
 };
 
 export default defineConfig({
+  base: "/counterfraud/",
   plugins: [
     vue(),
     vueDevTools(),
