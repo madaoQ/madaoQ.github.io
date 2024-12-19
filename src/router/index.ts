@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory ,createWebHashHistory} from 'vue-router';
+import { createRouter, createWebHistory, createWebHashHistory } from 'vue-router';
 import MessageList from '@/views/MessageList.vue';
 // import MessageDetail from '@/views/MessageDetail.vue';
 // import ReceivedNotification from '@/views/ReceivedNotification.vue'
@@ -43,8 +43,8 @@ const routes = [
 ];
 
 const router = createRouter({
-  // history: createWebHistory(),
-  history: createWebHashHistory(), 
+  history: createWebHistory(),
+  // history: createWebHashHistory(), 
   routes,
 });
 
