@@ -1,6 +1,6 @@
 <template>
   <div class="p-4">
-    <h1 class="text-2xl font-bold mb-4">Received Notifications Test</h1>
+    <h1 class="text-2xl font-bold mb-4">Received Notifications</h1>
     <div v-if="receivedNotifications.length > 0" class="space-y-4">
       <Accordion 
         v-for="notification in receivedNotifications" 
