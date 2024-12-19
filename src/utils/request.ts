@@ -2,10 +2,12 @@
 
 import axios from 'axios'
 import { ElMessage } from 'element-plus';
+
 //利用axios对象create方法，创建axios实例，方便配置其他设置
 let request = axios.create({
     //基础路径
-    baseURL: '/api',
+    // baseURL: `${import.meta.env.VITE_API_URL}`,
+    baseURL: "http://39.102.214.115:8888",
     timeout: 5000
 });
 
