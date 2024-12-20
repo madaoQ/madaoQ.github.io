@@ -11,5 +11,6 @@ export interface MessageList{
 export interface ExtendedNotification extends AndroidNotification {
     uniqueId: string;
     color?: 'info' | 'warning' | 'error';
+    colorId?: number;
   }
   

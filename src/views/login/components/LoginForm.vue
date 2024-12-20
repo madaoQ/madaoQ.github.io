@@ -69,7 +69,8 @@ const login = () => {
     const formData = new FormData();
     formData.append('telephone', loginForm.username);
     formData.append('password', loginForm.password);
-    useStore.userLogin(formData as unknown as loginForm, router)
+    //useStore.userLogin(formData as unknown as loginForm, router)
+    useStore.userLogin(formData as unknown as loginForm, router, loginForm.username,loginForm.password)
 };
 
 

@@ -5,15 +5,20 @@ import { type loginForm } from '@/api/user/type';
 import { useRouter } from "vue-router";
 import { getTimeState } from "@/utils";
 import { ElNotification } from "element-plus";
+import {ref} from "vue"
+import type { S } from 'node_modules/vite/dist/node/types.d-aGj9QkWt';
 //创建用户小仓库
 let useUserStore = defineStore('User', {
     //小仓库数据
     state: () => {
-        return {}
+        return {
+            telephone:ref(''),
+            password:ref('')
+        }
     },
     actions: {
         //用户登陆方法
-        async userLogin(data: loginForm,router:any) {
+        async userLogin(data: loginForm,router:any,tele:string,pass:string) {
             try {
                 const result = await reqLogin(data);
                 console.log('Login response:', result);
@@ -22,6 +27,14 @@ let useUserStore = defineStore('User', {
                         name: 'MessageList', // 使用路由名称而不是路径
                         params: {}
                     });
+
+                    this.telephone = tele;
+                    this.password = pass;
+
+                    //Fixed 为什么consolelog data类型是formData而不是我自己的interface
+                    console.log("userstoreData ",this.telephone,this.password)
+                    console.log("userstoreData ",data.telephone,data.password)
+                    console.log(data)
 
                     ElNotification({
                         title: getTimeState(),

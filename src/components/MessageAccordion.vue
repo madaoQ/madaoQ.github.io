@@ -15,6 +15,7 @@
                 <p><strong>Received at:</strong> {{ formatDate(item.time) }}</p>
                 <p><strong>Package:</strong> {{ item.package }}</p>
                 <p><strong>ID:</strong> {{ item.uniqueId }}</p>
+                <p><strong>color:</strong> {{ item.colorId }}</p>
                 <div class="mt-2 flex space-x-2">
                     <button @click="$emit('remove', item.uniqueId)"
                         class="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600 focus:outline-none">Remove</button>
@@ -44,6 +45,16 @@ const isOpen = ref(false);
 const toggle = () => {
     isOpen.value = !isOpen.value;
 };
+
+// 新增的计算属性，用于根据 colorId 设置颜色
+const currentColor = computed(() => {
+    switch (props.item.colorId) {
+        case 1: return 'info';
+        case 2: return 'warning';
+        case 3: return 'error';
+        default: return undefined;
+    }
+});
 
 const enter = (el: Element, done: () => void): void => {
     const element = el as HTMLElement; // 断言为 HTMLElement 如果需要的话
@@ -81,20 +92,32 @@ const formatDate = (timestamp: number): string => {
     return date.toLocaleString();
 };
 
+// const colorClass = computed(() => {
+//     switch (props.item.color) {
+//         case 'info': return 'text-blue-500';
+//         case 'warning': return 'text-yellow-500';
+//         case 'error': return 'text-red-500';
+//         default: return 'text-gray-800';
+//     }
+// });
+
 const colorClass = computed(() => {
-    switch (props.item.color) {
+    if (!currentColor.value) return 'text-gray-800';
+
+    switch (currentColor.value) {
         case 'info': return 'text-blue-500';
         case 'warning': return 'text-yellow-500';
         case 'error': return 'text-red-500';
-        default: return 'text-gray-800';
     }
 });
 
-watch(() => props.item.color, (newColor) => {
-    if (newColor) {
-        emit('change-color', newColor);
-    }
-});
+// watch(() => props.item.color, (newColor) => {
+//     if (newColor) {
+//         emit('change-color', newColor);
+//     }
+// });
+
+
 </script>
   
 <style scoped>

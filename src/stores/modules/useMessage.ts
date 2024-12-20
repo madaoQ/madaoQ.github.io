@@ -3,6 +3,9 @@ import { type Message, type MessageList } from '@/stores/interface/index'
 import { type AndroidNotification, NotificationsListener, type NotificationsListenerPlugin, type ListenerOptions } from 'capacitor-notifications-listener';
 import { type ExtendedNotification } from '@/stores/interface/index'
 import { ref, toRef } from 'vue';
+import axios from 'axios';
+import useUserStore from './user';
+
 export const useMessageStore = defineStore('message', {
   state: () => ({
     // 用于存储接收到的通知
@@ -13,6 +16,7 @@ export const useMessageStore = defineStore('message', {
       return this.receivedNotifications.find(n => parseInt(n.uniqueId) === id)
     },
     fetchNotification() {
+      const userStore = useUserStore();
       const systemNotificationListener: NotificationsListenerPlugin = NotificationsListener;
       const options: ListenerOptions = {
         cacheNotifications: true // 请求通知缓存权限
@@ -41,14 +45,53 @@ export const useMessageStore = defineStore('message', {
       // 初始化监听器
       systemNotificationListener.startListening(options);
 
+      let colorId = 0;
 
       // 添加通知接收和移除事件监听器
       systemNotificationListener.addListener("notificationReceivedEvent", (notification: AndroidNotification) => {
         const uniqueId = generateUniqueId();
-        const extendedNotification = { ...notification, uniqueId };
+
+        // try {
+        //   const responseAdd = await axios.post('http://39.102.214.115:8888/data/add',
+        //     {}, // 请求体数据，这里假设为空对象，根据需要修改
+        //     {
+        //       headers: { // 配置对象中的headers属性
+        //         'telephone': userStore.telephone,
+        //         'password': userStore.password
+        //       }
+        //     });
+
+        //   const response = await axios.post('http://39.102.214.115:8888/ai/run',
+        //     { text: notification.text }, // 请求体数据，这里假设为空对象，根据需要修改
+        //     {
+        //       headers: { // 配置对象中的headers属性
+        //         'telephone': userStore.telephone,
+        //         'password': userStore.password
+        //       }
+        //     });
+
+
+        //   const result = response.data;
+
+        //   if (result.code === 0) {
+        //     console.log('Operation succeeded:', result);
+        //     colorId = result.type_id;
+        //     // 成功时的操作
+        //   } else {
+        //     console.error('Operation failed with code:', result.code);
+        //     // 失败时的操作
+        //   }
+        // } catch (error) {
+        //   console.error('Error posting data:', error);
+        // }
+
+        axiosPost(notification)
+
+        const extendedNotification = { ...notification, uniqueId, colorId };
         // 确保通知唯一性
         if (!this.receivedNotifications.find(n => n.uniqueId === uniqueId) && extendedNotification.title !== '') {
           this.receivedNotifications.unshift(extendedNotification);
+
         }
       });
 
@@ -57,7 +100,63 @@ export const useMessageStore = defineStore('message', {
         // logic ...
       });
 
-      
+
+      async function axiosPost(notification: AndroidNotification) {
+        try {
+
+          const formDataBodyAi = new FormData();
+          formDataBodyAi.append('text', notification.text)
+
+          //http://39.102.214.115:8888/ai/run
+          const response = await axios.post('http://39.102.214.115:8888/ai/run',
+            // { text: notification.text }, // 请求体数据
+            formDataBodyAi,
+            {
+              headers: { // 配置对象中的headers属性
+                'telephone': userStore.telephone,
+                'password': userStore.password
+              }
+            });
+
+
+          const result = response.data;
+          const type = result.type;
+
+          const formDataBodyAdd = new FormData();
+          formDataBodyAdd.append('package', notification.package)
+          formDataBodyAdd.append('type', type)
+          formDataBodyAdd.append('telephone', userStore.telephone)
+          formDataBodyAdd.append('text', notification.text)
+
+          //http://39.102.214.115:8888/data/add
+          const responseAdd = await axios.post('http://39.102.214.115:8888/data/add',
+            // {
+            //   package: notification.package,
+            //   type: type,
+            //   telephone: userStore.telephone,
+            //   text: notification.text,
+            // }, // 请求体数据
+            formDataBodyAdd,
+            {
+              headers: { // 配置对象中的headers属性
+                'telephone': userStore.telephone,
+                'password': userStore.password
+              }
+            });
+
+          if (result.code === 0) {
+            console.log('Operation succeeded:', result);
+            colorId = result.type_id;
+            // 成功时的操作
+          } else {
+            console.error('Operation failed with code:', result.code);
+            // 失败时的操作
+          }
+        } catch (error) {
+          console.error('Error posting data:', error);
+        }
+      }
+
 
       function stop() {
         systemNotificationListener.stopListening();
