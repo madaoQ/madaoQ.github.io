@@ -48,7 +48,7 @@ export const useMessageStore = defineStore('message', {
       let colorId = 0;
 
       // 添加通知接收和移除事件监听器
-      systemNotificationListener.addListener("notificationReceivedEvent", (notification: AndroidNotification) => {
+      systemNotificationListener.addListener("notificationReceivedEvent", async (notification: AndroidNotification) => {
         const uniqueId = generateUniqueId();
 
         // try {
@@ -85,9 +85,9 @@ export const useMessageStore = defineStore('message', {
         //   console.error('Error posting data:', error);
         // }
 
-        axiosPost(notification)
+        await axiosPost(notification)
 
-        const extendedNotification = { ...notification, uniqueId, colorId };
+        const extendedNotification = {...notification, uniqueId, colorId};
         // 确保通知唯一性
         if (!this.receivedNotifications.find(n => n.uniqueId === uniqueId) && extendedNotification.title !== '') {
           this.receivedNotifications.unshift(extendedNotification);
